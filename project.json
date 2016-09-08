@@ -41,6 +41,7 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true
+    "outputName": "MyAppHeroku"
   },
 
   "runtimeOptions": {
