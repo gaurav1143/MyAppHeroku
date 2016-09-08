@@ -1,8 +1,7 @@
 {
   "name": "ASP.NET Core Mvc Website",
   "description": "ASP.NET Core mvc website using Asp.Net Core",
-  "website": "http://www.softtrends.com/",
-  "repository": "https://github.com/heroku-softtrends/dotnetmvc.sample",
+  "repository": "http://gaurav1143.github.io/MyAppHeroku/",
   "logo": "https://avatars2.githubusercontent.com/u/20908829?v=3&s=150",
   "keywords": ["aspnet core", "aspnet core mvc"],
   "buildpacks": [
