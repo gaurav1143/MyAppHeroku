@@ -1,109 +1,83 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-        <li data-target="#myCarousel" data-slide-to="3"></li>
-    </ol>
-    <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            <img src="~/images/banner1.svg" alt="ASP.NET" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how to build ASP.NET apps that can run anywhere.
-                    <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner2.svg" alt="Visual Studio" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner3.svg" alt="Package Management" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
-                    <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner4.svg" alt="Microsoft Azure" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
+
+    <h3>Deploy .NET project (built using Visual Studio 2015) to Heroku using a build pack : Gaurav for TechNote</h3>
+    <p>This uses the .Net Core Buildpack provided by Softtends available on <a href="https://github.com/heroku-softtrends/dotnetcore.main.git">github.</a><br></p>
+
+    <p>Pre-requisites for this</p>
+    <div class="section" id="install-visual-studio-and-net-core">
+        <h2>Install Visual Studio and .NET Core<a class="headerlink" href="#install-visual-studio-and-net-core" title="Permalink to this headline">¶</a></h2>
+        <ul class="simple">
+            <li>
+                Install Visual Studio Community 2015. Select the Community download and the default installation. Skip this step if you have Visual Studio 2015 installed.<ul>
+                    <li><a class="reference external" href="https://www.visualstudio.com/en-us/visual-studio-homepage-vs.aspx">Visual Studio 2015 Home page installer</a></li>
+                </ul>
+            </li>
+            <li>Install <a class="reference external" href="http://go.microsoft.com/fwlink/?LinkID=798306">.NET Core + Visual Studio tooling</a></li>
+        </ul>
     </div>
-    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
+    <p>Or, follow the steps <a href="https://docs.asp.net/en/latest/tutorials/first-mvc-app/start-mvc.html">link</a> to create your 1st .NET core application using Visual Studio 2015.</p>
+
+    <p>Now, you've created a new ASP.NET Core project. <a href="https://go.microsoft.com/fwlink/?LinkId=518016">Learn what's new</a></p>
+
+    <p>Follow the below steps which are <strong>important</strong> to implement the buildpack on a .NET project.</p>
+
+
+    <p>
+        You need to make the following changes in your Program.cs and project.json to deploy on Heroku
+        <br>
+        In <strong>Program.cs</strong>
+    </p>
+
+    <ul>
+        <li>
+            <p>
+                Add UseUrls method and pass args[0] as parameter to start your app. Because Heroku web dyno will start with dynamic port after sucessful deployment. We need to use the same port in code behind also then only your app will start and listen on that port else dotnet runtime will set default port 5000. Thereby we pass port number as parameter with url in Procfile
+                <br>
+                public static void Main(string[] args
+                {<br>
+                var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup()
+                <strong>.UseUrls(args[0])</strong>
+                .Build();
+            </p>
+
+<pre><code>    host.Run();
+</code></pre>
+
+            <p>
+                }<br>
+                In <strong>project.json</strong>
+            </p>
+        </li>
+        <li><p>Add a new property called "outputName": "Your_ProjectName" in buildOptions  </p></li>
+        <li>
+            Remove scripts section. It has prepublish and postpublish actions which are not needed
+            <br>
+            <br>
+        </li>
+    </ul>
+
+    Add a new file app.json in the application directory. Its an important step as this file helps heroku to recognize it. Use the <a href="https://devcenter.heroku.com/articles/app-json-schema"> link.</a>
+    <br>
+    <br />
+    Once you have made the above modifications, create a github reository and upload the code. Once. uploaded, goto Repository Setting , Automatic page generator section
+    and click on Launch automatic page generator button. Follow the steps to create your own repository page. Once created, update the app.json file created above.
+    <br />
+    The repository value to be updated to the repository page as created above. And, buildpack URL to be updated with <a href="https://github.com/heroku-softtrends/dotnetcore.main.git"> link.</a>
+    You can deploy my github based ASP.Net website on Heroku server by clicking below button
+    <br>
+    <br>
+    <a href="https://heroku.com/deploy?template=http://gaurav1143.github.io/MyAppHeroku">
+        <img src="https://camo.githubusercontent.com/83b0e95b38892b49184e07ad572c94c8038323fb/68747470733a2f2f7777772e6865726f6b7563646e2e636f6d2f6465706c6f792f627574746f6e2e737667" alt="Deploy" data-canonical-src="https://www.herokucdn.com/deploy/button.svg" style="max-width:100%;">
     </a>
-    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
+
 </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side libraries</li>
-            <li>Theming using <a href="http://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>How to</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=699562">Add an appsetting in config and access it in app.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699318">Add client packages using Bower.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Run & Deploy</h2>
-        <ul>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>
+
